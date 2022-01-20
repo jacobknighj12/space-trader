@@ -21,7 +21,7 @@ function CheckStatus() {
   axios(config)
     .then(function (response) {
       console.log(JSON.stringify(response.data))
-      setOnline(JSON.stringify(response.data))
+      setOnline(JSON.stringify(response.data.status))
     })
     .catch(function (error) {
       console.log(error);
@@ -33,8 +33,9 @@ function CheckStatus() {
 
 
 function App() {
-  const [text, setText] = useState('yo')
 
+  const [text, setText] = useState('yo')
+  const [ships, setShips] = useState('ships')
 
   function getAccount(token) {
     var config = {
@@ -48,8 +49,8 @@ function App() {
 
     axios(config)
       .then(function (response) {
-        console.log(JSON.stringify(response.data))
-        setText(JSON.stringify(response.data));
+        // console.log(JSON.stringify(response.data))
+        setText(JSON.stringify(response.data.user));
       })
       .catch(function (error) {
         console.log(error);
@@ -57,7 +58,7 @@ function App() {
 
   }
 
-  function getAllShips() {
+  function GetAllShips() {
 
     var config = {
       method: 'get',
@@ -69,21 +70,21 @@ function App() {
 
     axios(config)
       .then(function (response) {
-        console.log(JSON.stringify(response.data))
-        setText(JSON.stringify(
-          response.data.shipListings.forEach(obj => {
-            Object.entries(obj).forEach(([key, value]) => {
-              console.log(`${key} ${value}`);
-            });
-          })
-        ));
+        console.log(JSON.stringify(response.data.shipListings))
+        // setText(JSON.stringify(response.data.shipListings))
+        setShips(JSON.stringify(response.data.shipListings))
+        // (JSON.stringify(
+        //   response.data.shipListings.forEach(obj => {
+        //     Object.entries(obj).forEach(([key, value]) => {
+        //       console.log(`${key} ${value}`);
+        //     });
+        //   })
+        // ));
 
 
 
         // response.data.forEach(obj => {
-        //   Object.entries(obj).forEach(([key, value]) => {
-        //     console.log(`${key} ${value}`);
-        //   });
+        //   Object.entries(obj).
         // });
 
 
@@ -92,7 +93,12 @@ function App() {
         console.log(error);
       });
   }
-
+  function shipSplit(props) {
+    for (props of ships)
+      return (
+        `${ships}`
+      )
+  }
 
   return (
     <div className="App" >
@@ -100,9 +106,9 @@ function App() {
       <CheckStatus />
       {/* <button onClick={CheckStatus} onSubmit={((event) => event.preventDefault())}>get status</button> */}
       <button onClick={getAccount} onSubmit={((event) => event.preventDefault())}>get account</button>
-      <button onClick={getAllShips} onSubmit={((event) => event.preventDefault())}>buy a ship</button>
+      <button onClick={GetAllShips} onSubmit={((event) => event.preventDefault())}>buy a ship</button>
 
-      <p className='text' >{text}</p>
+      <p className='text' >{text}{shipSplit()}</p>
     </div>
   );
 }
