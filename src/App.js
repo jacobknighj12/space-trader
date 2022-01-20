@@ -1,12 +1,17 @@
-import logo from './logo.svg';
+
 import './App.css';
 import React, { useState } from 'react';
 import axios from 'axios';
 import Account from './components/Account';
-const token = 'e7310053-5be4-4293-b54c-24c0fa5b351b'
 
-checkStatus();
-function checkStatus() {
+const token = 'Bearer '
+
+
+
+
+
+function CheckStatus() {
+  const [online, setOnline] = useState('')
   var config = {
     method: 'get',
     url: 'https://api.spacetraders.io/game/status',
@@ -15,43 +20,30 @@ function checkStatus() {
 
   axios(config)
     .then(function (response) {
-      console.log(JSON.stringify(response.data));
+      console.log(JSON.stringify(response.data))
+      setOnline(JSON.stringify(response.data))
     })
     .catch(function (error) {
       console.log(error);
     });
+  return (
+    <h3>{online}</h3>
+  )
 }
-function getAccount(token) {
 
-  var config = {
-    method: 'get',
-    url: 'https://api.spacetraders.io/my/account?token=e7310053-5be4-4293-b54c-24c0fa5b351b',
-    headers: {
-      'Authorization': 'Bearer e7310053-5be4-4293-b54c-24c0fa5b351b'
-    }
-
-  };
-
-  axios(config)
-    .then(function (response) {
-      console.log(JSON.stringify(response.data));
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-
-}
 
 function App() {
   const [text, setText] = useState('yo')
 
-  function getAllShips() {
+
+  function getAccount(token) {
     var config = {
       method: 'get',
-      url: 'https://api.spacetraders.io/systems/OE/ship-listings?token=e7310053-5be4-4293-b54c-24c0fa5b351b&class=',
+      url: 'https://api.spacetraders.io/my/account?token=e7310053-5be4-4293-b54c-24c0fa5b351b',
       headers: {
-        'Authorization': 'Bearer e7310053-5be4-4293-b54c-24c0fa5b351b'
+        'Authorization': token
       }
+
     };
 
     axios(config)
@@ -62,15 +54,54 @@ function App() {
       .catch(function (error) {
         console.log(error);
       });
+
+  }
+
+  function getAllShips() {
+
+    var config = {
+      method: 'get',
+      url: 'https://api.spacetraders.io/systems/OE/ship-listings?token=e7310053-5be4-4293-b54c-24c0fa5b351b&class=',
+      headers: {
+        'Authorization': token
+      }
+    };
+
+    axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data))
+        setText(JSON.stringify(
+          response.data.shipListings.forEach(obj => {
+            Object.entries(obj).forEach(([key, value]) => {
+              console.log(`${key} ${value}`);
+            });
+          })
+        ));
+
+
+
+        // response.data.forEach(obj => {
+        //   Object.entries(obj).forEach(([key, value]) => {
+        //     console.log(`${key} ${value}`);
+        //   });
+        // });
+
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 
 
   return (
     <div className="App" >
       <Account />
-      <button onClick={checkStatus}>get status</button>
-      <button onClick={getAccount}>get account</button>
-      <button onClick={getAllShips}>buy a ship</button>
+      <CheckStatus />
+      {/* <button onClick={CheckStatus} onSubmit={((event) => event.preventDefault())}>get status</button> */}
+      <button onClick={getAccount} onSubmit={((event) => event.preventDefault())}>get account</button>
+      <button onClick={getAllShips} onSubmit={((event) => event.preventDefault())}>buy a ship</button>
+
       <p className='text' >{text}</p>
     </div>
   );
