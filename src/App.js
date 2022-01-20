@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Account from './components/Account';
 
-const token = 'Bearer '
+const token = 'Bearer  '
 
 
 
@@ -70,16 +70,17 @@ function App() {
 
     axios(config)
       .then(function (response) {
-        console.log(JSON.stringify(response.data.shipListings))
+        // console.log(JSON.stringify(response.data.shipListings))
         // setText(JSON.stringify(response.data.shipListings))
-        setShips(JSON.stringify(response.data.shipListings))
-        // (JSON.stringify(
-        //   response.data.shipListings.forEach(obj => {
-        //     Object.entries(obj).forEach(([key, value]) => {
-        //       console.log(`${key} ${value}`);
-        //     });
-        //   })
-        // ));
+        // setShips(JSON.stringify(response.data.shipListings))
+
+
+        //CURRENTLY BEING PASSED AS OBJECTS AND REACT DOESNT LIKE IT PLEASE FIX
+        response.data.shipListings.forEach(obj => {
+          Object.entries(obj).forEach(([key, value]) => {
+            setShips({ key }, { value })
+          });
+        });
 
 
 
@@ -93,12 +94,12 @@ function App() {
         console.log(error);
       });
   }
-  function shipSplit(props) {
-    for (props of ships)
-      return (
-        `${ships}`
-      )
-  }
+  // function shipSplit(props) {
+  //   for (props of ships)
+  //     return (
+  //       `${ships}`
+  //     )
+  // }
 
   return (
     <div className="App" >
@@ -108,7 +109,7 @@ function App() {
       <button onClick={getAccount} onSubmit={((event) => event.preventDefault())}>get account</button>
       <button onClick={GetAllShips} onSubmit={((event) => event.preventDefault())}>buy a ship</button>
 
-      <p className='text' >{text}{shipSplit()}</p>
+      <p className='text' >{text}{ships}</p>
     </div>
   );
 }
